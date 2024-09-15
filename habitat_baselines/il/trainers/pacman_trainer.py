@@ -658,3 +658,4 @@ class PACMANTrainer(BaseILTrainer):
                         writer,
                         video_option,
                     )
+            metrics.dump_log()

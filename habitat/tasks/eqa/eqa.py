@@ -13,9 +13,8 @@ from habitat.core.embodied_task import Action, Measure
 from habitat.core.registry import registry
 from habitat.core.simulator import Observations, Sensor, SensorTypes
 from habitat.core.spaces import ListSpace
-from habitat.core.utils import not_none_validator
+from habitat.core.utils import not_none_validator, wo_validator
 from habitat.tasks.nav.nav import NavigationEpisode, NavigationTask
-
 
 @attr.s(auto_attribs=True)
 class QuestionData:
@@ -25,6 +24,11 @@ class QuestionData:
     answer_token: Optional[List[str]] = None
     question_type: Optional[str] = None
 
+@attr.s(auto_attribs=True)
+class LLMData:
+    declarative_text: str
+    object: str
+    in_rednet_cat: bool
 
 @attr.s(auto_attribs=True, kw_only=True)
 class EQAEpisode(NavigationEpisode):
@@ -43,6 +47,9 @@ class EQAEpisode(NavigationEpisode):
 
     question: QuestionData = attr.ib(
         default=None, validator=not_none_validator
+    )
+    llm: LLMData = attr.ib(
+        default=None, validator=wo_validator
     )
 
 

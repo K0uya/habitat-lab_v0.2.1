@@ -960,11 +960,18 @@ class DistanceToGoal(Measure):
         self._previous_position = None
         self._metric = None
         if self._config.DISTANCE_TO == "VIEW_POINTS":
-            self._episode_view_points = [
-                view_point.agent_state.position
-                for goal in episode.goals
-                for view_point in goal.view_points
-            ]
+            if hasattr(episode.goals[0].view_points[0], 'agent_state'):
+                self._episode_view_points = [
+                    view_point.agent_state.position
+                    for goal in episode.goals
+                    for view_point in goal.view_points
+                ]
+            else:
+                self._episode_view_points = [
+                    view_point.position
+                    for goal in episode.goals
+                    for view_point in goal.view_points
+                ]
         self.update_metric(episode=episode, *args, **kwargs)  # type: ignore
 
     def update_metric(
@@ -1035,6 +1042,19 @@ class StopAction(SimulatorTaskAction):
         ``step``.
         """
         task.is_stop_called = True  # type: ignore
+        return self._sim.get_observations_at()  # type: ignore
+
+@registry.register_task_action
+class ObserveAction(SimulatorTaskAction):
+    name: str = "OBSERVE"
+
+    def reset(self, task: EmbodiedTask, *args: Any, **kwargs: Any):
+        task.is_stop_called = False  # type: ignore
+
+    def step(self, task: EmbodiedTask, *args: Any, **kwargs: Any):
+        r"""Update ``_metric``, this method is called from ``Env`` on each
+        ``step``.
+        """
         return self._sim.get_observations_at()  # type: ignore
 
 

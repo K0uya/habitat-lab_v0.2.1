@@ -75,6 +75,12 @@ def overwrite_config(
                     setattr(config_to, low_attr, trans_dict[low_attr](value))
                 else:
                     setattr(config_to, low_attr, if_config_to_lower(value))
+            elif low_attr=="sensor_height":
+                setattr(config_to,"position",[0.0,value,0.0])
+            elif low_attr=="vfov":
+                setattr(config_to,"VFOV",value)
+            elif low_attr=="hfov":
+                setattr(config_to,"HFOV",value)
             else:
                 raise NameError(
                     f"""{low_attr} is not found on habitat_sim but is found on habitat_lab config.

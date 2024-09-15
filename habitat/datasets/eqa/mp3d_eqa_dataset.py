@@ -53,7 +53,9 @@ class Matterport3dDatasetV1(Dataset):
 
         if config is None:
             return
-
+        print(f"PATH: {config.DATA_PATH.format(split=config.SPLIT)}")
+        print(f"SCENE PATH: {config.SCENES_DIR}")
+        print(f"CONTENT SCENES: {config.CONTENT_SCENES}")
         with gzip.open(config.DATA_PATH.format(split=config.SPLIT), "rt") as f:
             self.from_json(f.read(), scenes_dir=config.SCENES_DIR)
 

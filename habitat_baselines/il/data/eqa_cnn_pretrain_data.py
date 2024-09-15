@@ -97,8 +97,12 @@ class EQACNNPretrainDataset(Dataset):
                 pos.position, pos.rotation
             )
 
-            depth = observation["depth"]
-            rgb = observation["rgb"]
+            if self.config.CAMERA_TYPE == "equirectangular":
+                depth = observation["depth_equirectangular"]
+                rgb = observation["rgb_equirectangular"]
+            elif  self.config.CAMERA_TYPE == "pinhole":
+                depth = observation["depth"]
+                rgb = observation["rgb"]
 
             scene = self.env.sim.semantic_annotations()
             instance_id_to_label_id = {
@@ -111,7 +115,12 @@ class EQACNNPretrainDataset(Dataset):
                     for i in range(len(instance_id_to_label_id))
                 ]
             )
-            seg = np.take(self.mapping, observation["semantic"])
+            if self.config.CAMERA_TYPE == "equirectangular":
+                seg = np.take(self.mapping, observation["semantic_equirectangular"])
+            elif self.config.CAMERA_TYPE == "pinhole":
+                seg = np.take(self.mapping, observation["semantic"])
+            else:
+                raise Exception
             seg[seg == -1] = 0
             seg = seg.astype("uint8")
 

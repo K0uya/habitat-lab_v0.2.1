@@ -218,7 +218,12 @@ class EQADataset(wds.Dataset):
             observation = self.env.sim.get_observations_at(
                 pos.position, pos.rotation
             )
-            img = observation["rgb"]
+            if self.config.CAMERA_TYPE=="equirectangular":
+                img = observation["rgb_equirectangular"]
+            elif self.config.CAMERA_TYPE == "pinhole":
+                img = observation["rgb"]
+            else:
+                raise Exception
             idx = "{0:0=3d}".format(idx)
             episode_id = "{0:0=4d}".format(int(episode_id))
             new_path = os.path.join(

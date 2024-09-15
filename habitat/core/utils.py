@@ -65,6 +65,10 @@ def not_none_validator(
     if value is None:
         raise ValueError(f"Argument '{attribute.name}' must be set")
 
+def wo_validator(
+    self: Any, attribute: Any, value: Optional[Any]
+) -> None:
+    pass
 
 def try_cv2_import():
     r"""The PyRobot python3 version which is a dependency of Habitat-PyRobot integration
